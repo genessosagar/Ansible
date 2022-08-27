@@ -3,3 +3,11 @@ ANSIBLE
 =======
 This repository has the information about Ansible
 Ansible Playbooks
+
+Ansible is Configuration Management tool
+It can configure required softwares in the servers
+It can also be used for provisioning Infrastructure in cloud
+
+Ansible - Modules
+Ansible has modules written in Python language (95%)
+
