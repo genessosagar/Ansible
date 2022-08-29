@@ -1,0 +1,22 @@
+Default inventory in ansible is /etc/ansible/hosts
+
+Custom Inventory
+----------------
+Create any file with any name in any location
+$ ansible fronend -i /home/ansible/invent -m setup
+
+Custom Inventory - Defining our own hosts file instead of using default hostfile - /etc/ansible/hosts
+$ ansible -i /home/ansible/hosts demo -m ping
+
+Ansible.cfg file
+ANSIBLE_CFG -> Env Variable defined (First)
+export ANSIBLE_CFG="/tmp/ansible.cfg"
+
+Current Directory (Second)
+./ansible.cfg
+
+Users home directory (Third)
+~/ansible.cfg
+
+Default ansible path -> /etc/ansible/ansible.cfg (Fourth)
+

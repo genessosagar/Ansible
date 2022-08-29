@@ -1,0 +1,38 @@
+YAML Format
+--- #Document Marker
+Datatypes in YAML
+String
+Numbers / Integer
+List
+
+Fruits:
+  - Orange
+  - Apple
+  - Mango
+  - Grapes
+
+Playbook consits of multiple plays or list of plays
+
+Files -> filename.yaml or filename.yml
+
+Play - Play is an ordered set of tasks which will run against the managed hosts
+
+---
+ - first_play
+ - second_play
+ - Third_play
+
+
+Playbook - Sections
+
+1. Target Section => Managed Nodes -> test, all
+2. Variable Section => Define varibles and use them
+3. Tasks Section => Activity -> Install packages, remove, create files , dir or create users
+4. Handler Section =>
+5. Templates
+
+Execute playbooks
+$ ansible-playbook file_name.yaml
+
+For verbose output
+$ ansible-playbook file_name.yaml -vvv 

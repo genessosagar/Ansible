@@ -1,0 +1,90 @@
+---------------
+Ansible Modules
+---------------
+Adhoc commands to execute single module on the desired inventory
+1. Ping Module
+$ ansible 
+
+Modules
+ping
+$ ansible <host-pattern>  -m <module_name> -a "<arguments>"
+$ ansible <ip_address> -m ping
+$ ansible test -m ping
+$ ansible controller -m ping
+$ ansible all -m ping
+$ ansible test[1] -m ping
+$ ansible test[10:20] -m ping
+
+copy
+$ ansible test -m copy -a "src=/home/ansible/dummyfile dest=/tmp"
+
+user - To create a user
+$ ansible -b test -m user -a "name=genesso state=present"
+
+file - To create a file
+$ ansible test -m file -a "path=/tmp/file1000 state=touch"
+
+
+apt -  Become a root user and perform this module -> -b
+$ ansible -b test -m apt -a "name=nginx state=present"
+
+Service Module -
+$ ansible -b test -m service -a "name=nginx state=stopped"
+
+yum -> Redhat
+
+Package Module
+$ ansible -b test -m package -a "name=nginx state=present"
+
+Default module is Command Module - Execute Linux Commands - A default Module
+$ ansible test -m command -a "ls /tmp"
+
+Shell Module - Handles special characters like | > < >> <<
+$ ansible test -m shell -a "cat /etc/passwd | grep genesso"
+
+# Explore RAW module in ansible
+
+Setup Module ->
+$ ansible test -m setup
+
+$ ansible-doc <module_name>
+$ ansible-doc apt
+
+
+
+
+ 
+2. Using ansible-playbooks -> YAML
+Playbooks
+
+YAML Format
+--- #Document Marker
+Datatypes in YAML
+String
+Numbers / Integer
+List
+
+Fruits:
+  - Orange
+  - Apple
+  - Mango
+  - Grapes
+
+Playbook consits of multiple plays or list of plays
+
+Files -> filename.yaml or filename.yml
+
+Play - Play is an ordered set of tasks which will run against the managed hosts
+
+---
+ - first_play
+ - second_play
+ - Third_play
+
+
+Playbook - Sections
+
+1. Target Section => Managed Nodes -> test, all
+2. Variable Section => Define varibles and use them
+3. Tasks Section => Activity -> Install packages, remove, create files , dir or create users
+4. Handler Section =>

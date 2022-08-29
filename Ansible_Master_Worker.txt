@@ -1,0 +1,63 @@
+Make sure there is a connectivity between Ansible Master and Worker
+Login to both Master and Worker and execute the following commands
+
+# Update the servers
+$ sudo apt updpate
+
+# Create ansible user
+$ sudo useradd -m ansible --shell /bin/bash
+
+Become a root user
+$ sudo -i
+
+# Give ansible user sudo access
+$ vi /etc/suoders
+Add the following line
+ansible ALL=(ALL:ALL) NOPASSWD:ALL
+
+# Switch to ansible user
+$ su ansible
+$ sudo apt update
+$ cd ~
+
+# On the MASTER server generate new ssh keys
+$ ssh-keygen
+This will generate private -> id_rsa key and public id_rsa.pub
+
+# On the WORKER server
+$ cd ~
+$ ls -la (Observe if .ssh directory is there or not, if it doesn't exist, create one manually)
+$ mkdir .ssh
+$ cd .ssh
+$ vi authorized_keys
+Copy the content of newly generated public key from master server and paste in this file
+
+# Go to the master server and try ssh to worker node, it should not prompt for any password
+$ ssh 
+
+Software Pre-requisities
+------------------------
+1. Python on both Master and Worker (ubuntu comes with python installed)
+2. Install Ansible on Master Node
+$ sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+
+On Master server
+----------------
+After installing ansible
+We have a default configuration files in ansible
+$ cd /etc/ansible
+
+Inventory File
+--------------
+/etc/ansible/hosts -> default available inventory file
+This is where we will add the inventory
+Inventory is nothing but the list of IPs we want ansible to connect and configure desired packages
+Add the Worker IPs in the inventory file
+
+$ sudo vi /etc/ansible/hosts
+[backend]  # Name of the group
+172.31.3.82
+

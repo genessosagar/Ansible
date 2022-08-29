@@ -1,0 +1,14 @@
+---
+  - name: This is the firstplay in this Playbook
+    hosts: backend
+    become: yes
+    tasks:
+      - name: First task is to install tree package
+        apt:
+          update_cache: yes
+          name: tree
+          state: present
+      - name: Task to create an user
+        user:
+          name: genesso
+          state: present

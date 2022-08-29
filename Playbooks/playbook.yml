@@ -1,0 +1,553 @@
+# This is the First Playbook we are writing
+# first.yaml  or  yml
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         update_cache: yes
+         name: tree
+         state: present         
+
+# ansible-playbook first.yaml    
+# IF needed use gather_facts: no -> This will not execute the Gathering  Facts task (Setup Module)
+
+# This playbook is used to install tree and stress pacakges
+pb1.yaml
+---
+ - name: This is the Play to install tree and stress packages
+   hosts: all
+   become: yes
+   tasks:
+     - apt:
+         name: tree
+         state: present
+     - name: Install Stress Pakcage
+       apt:
+         name: stress
+         state: present
+     - name: Create a file 
+       file:
+         path: /tmp/file500
+         state: touch          
+     - name: Insert content in the file create above
+       lineinfile:
+         path: /tmp/file500
+         line: The is the content added using lineinfile module
+
+
+pb2.yml
+---
+ - name: This is the Play to uninstall tree, stress, maven, openjdk-8-jdk package
+   hosts: all
+   become: yes
+   tasks:
+     - name: Uninstall Tree and Stress and more Packages
+       apt:
+         name: 
+          - tree
+          - stress
+          - maven
+          - openjdk-8-jdk
+         state: absent
+         
+         
+# Variables Section in Ansible Playbook
+
+var1.yaml
+
+---
+ - name: This is the Play uses variables
+   hosts: test
+   become: yes
+   vars:
+     - pkgname1: tree
+     - pkgname2: stress
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkgname1 }}'
+         state: present
+     - name: Install Stress Pakcage
+       apt:
+         name: '{{ pkgname2 }}'
+         state: present
+
+var2.yaml
+---
+ - hosts: test
+   become: yes
+   vars:
+     - pkgname1: tree
+     - pkgname2: stress
+     - myname: Genesso
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkgname1 }}'
+         state: present
+     - name: Install Stress Pakcage
+       apt:
+         name: '{{ pkgname2 }}'
+         state: present
+     - name: Print my name using the variable
+       command:
+         echo "{{ myname }}"
+
+# The above playbook will not print the output use register keyword
+
+
+var3.yaml
+---
+ - hosts: test
+   become: yes
+   vars:
+     - pkgname1: tree
+     - pkgname2: stress
+     - myname: Genesso
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkgname1 }}'
+         state: present
+     - name: Install Stress Pakcage
+       apt:
+         name: '{{ pkgname2 }}'
+         state: present
+     - name: Print my name using the variable
+       command:
+         echo "{{ myname }}"
+       register: name1
+     - name: Print my name
+       debug:
+         var: name1     #name1.stdout          
+
+Variable File
+
+var4.yaml
+---
+ - hosts: test
+   become: yes
+   vars_files:
+     - /home/ansible/playbooks/variable.yaml
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkgname1 }}'
+         state: present
+     - name: Install Stress Package
+       apt:
+         name: '{{ pkgname2 }}'
+         state: present
+     - name: Print my name using the variable
+       command:
+         echo "{{ myname }}"
+       register: name1
+     - name: Print my name
+       debug:
+         var: name1.stdout
+         
+# Defining Variables only to the Group of servers - test group 
+# Create a directory named group_vars in /etc/ansible
+# mkdir group_vars
+# cd group_vars
+# vi test (Test is a Group name defined in /etc/ansible/hosts file)
+pkg_name1: tree
+pkg_name2: stress
+myname: Sagar
+
+var5.yaml
+---
+ - hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkg_name1 }}'
+         state: present
+     - name: Install Stress Package
+       apt:
+         name: '{{ pkg_name2 }}'
+         state: present
+     - name: Print my name using the variable
+       command:
+         echo "{{ myname }}"
+       register: name1
+     - name: Print my name
+       debug:
+         var: name1.stdout
+
+
+handlers.yaml
+---
+ - hosts: test
+   become: yes
+   vars:
+     - pkgname1: tree
+     - pkgname2: stress
+     - myname: Genesso
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ pkgname1 }}'
+         state: present
+       notify: Install Maven
+     - name: Install Stress Pakcage
+       apt:
+         name: '{{ pkgname2 }}'
+         state: present
+     - name: Print my name using the variable
+       command:
+         echo "{{ myname }}"
+       register: name1
+     - name: Print my name
+       debug:
+         var: name1.stdout
+     - name: Install Nginx Handler Example
+       apt:
+         name: nginx
+         state: present
+       notify: Start nginx
+   handlers:
+     - name: Start nginx
+       service: name=nginx state=restarted  
+     - name: Install Maven
+       apt: name=maven state=present
+         
+
+
+
+#Run_Once
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: tree
+         state: present
+       run_once: true  
+     - name: Install Stress Pakcage
+       apt:
+         name: stress
+         state: present
+     
+       
+
+#delegate_to
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: tree
+         state: present
+       delegate_to: 172.31.17.119
+       run_once: true  
+     - name: Install Stress Pakcage
+       apt:
+         name: stress
+         state: present
+     
+       
+#Loops - Create multiple users
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: tree
+         state: present
+     - name: Install Stress Pakcage
+       apt:
+         name: stress
+         state: present
+     - name: Add Users
+       user:
+         name: '{{ item }}'
+         state: present
+       with_items:
+         - user1
+         - user2
+         - user3
+         - user4
+         - user5
+   
+- name: Add Users
+  user:
+    name: user1
+    state: present
+- name: Add Users
+  user:
+    name: user2
+    state: present
+- name: Add Users
+  user:
+    name: user3
+    state: present
+
+
+   
+# Loops
+loop1.yaml
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: '{{ item }}'
+         state: present
+       with_items: ['tree', 'stress', 'unzip', 'openjdk-8-jdk', 'maven']
+
+# Loop check
+       
+when.yaml
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Packages
+       apt:
+         name: ['tree', 'stress', 'unzip', 'openjdk-8-jdk', 'maven']
+         state: present
+       when: ansible_os_family == "RedHat"   #Change to Debian and Check
+       
+when1.yaml
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: ['tree', 'stress', 'unzip', 'openjdk-8-jdk', 'maven']
+         state: present
+       when: ansible_os_family == "RedHat"
+     - name: Condition Testing
+       command: echo {{ item }}
+       with_items: [0, 3, 4, 8, 2, 10]
+       when: item>5
+       
+
+#wait_for
+
+waitfor.yaml
+---
+ - name: This is the first Play install tree package
+   hosts: test
+   become: yes
+   tasks:
+     - name: Install Tree Package
+       apt:
+         name: tree
+         state: present
+       delegate_to: localhost
+       run_once: true  
+     - name: Install Stress Pakcage
+       apt:
+         name: stress
+         state: present
+     - name: Wait For Task
+       wait_for:
+         path: /tmp/genesso.file
+         state: present
+     - name: Add Users
+       user:
+         name: '{{ item }}'
+         state: present
+       with_items:
+         - user1
+         - user2
+         - user3
+         - user4
+         - user5
+         
+         
+TAGS
+We will be giving the name tags for the tasks
+tags.yaml
+---
+ - hosts: test
+   become: yes
+   tasks:
+     - name: Task1
+       command: echo Task1
+       tags:
+         - Taskone
+     - name: Task2
+       command: echo Task2
+       tags:
+         - Tasktwo
+     - name: Task3
+       command: echo Task3
+       tags:
+         - Taskthree
+     - name: Task4
+       command: echo Task4
+       tags:
+         - Taskfour
+     - name: Task5
+       command: echo Task5
+       tags:
+         - Taskfive
+     - name: Task6
+       command: echo Task6
+       tags:
+         - Tasksix
+         
+$ ansible-playbook tags.yaml --tags Taskthree
+
+
+
+
+
+#Print odd or even tasks
+tags1.yaml
+---
+ - hosts: test
+   become: yes
+   tasks:
+     - name: Task1
+       command: echo Task1
+       tags:
+         - Taskone
+         - odd
+     - name: Task2
+       command: echo Task2
+       tags:
+         - Tasktwo
+         - even
+     - name: Task3
+       command: echo Task3
+       tags:
+         - Taskthree
+         - odd
+     - name: Task4
+       command: echo Task4
+       tags:
+         - Taskfour
+         - even
+     - name: Task5
+       command: echo Task5
+       tags:
+         - Taskfive
+         - odd
+     - name: Task6
+       command: echo Task6
+       tags:
+         - Tasksix
+         - even
+
+
+tags2.yaml
+---
+ - hosts: test
+   become: yes
+   tasks:
+     - name: Task1
+       command: echo Task1
+       tags:
+         - Taskone
+         - odd
+     - name: Task2
+       command: echo Task2
+       tags:
+         - Tasktwo
+         - even
+         - Group1
+     - name: Task3
+       command: echo Task3
+       tags:
+         - Taskthree
+         - odd
+     - name: Task4
+       command: echo Task4
+       tags:
+         - Taskfour
+         - even
+     - name: Task5
+       command: echo Task5
+       tags:
+         - Taskfive
+         - odd
+         - Group1
+     - name: Task6
+       command: echo Task6
+       tags:
+         - Tasksix
+         - even
+         - Group1
+
+
+Note: --skip-tags Group1
+
+
+
+ignore.yaml
+---
+ - hosts: test
+   become: yes
+   tasks:
+     - name: Task1
+       command: echo Task1
+       tags:
+         - Taskone
+         - odd
+     - name: Task2
+       command: echo Task2
+       tags:
+         - Tasktwo
+         - even
+         - Group1
+     - name: Task3
+       command: echo Task3
+       tags:
+         - Taskthree
+         - odd
+     - name: Task4
+       command: /bin/false
+       tags:
+         - Taskfour
+         - even
+       ignore_errors: yes
+     - name: Task5
+       command: echo Task5
+       tags:
+         - Taskfive
+         - odd
+         - Group1
+     - name: Task6
+       command: echo Task6
+       tags:
+         - Tasksix
+         - even
+         - Group1
+         
+
+---
+- hosts: test
+  become: yes
+  tasks:
+    - name : Try to understand the concept of Ansible
+      template:
+        src: info.txt
+        dest: /tmp/info.txt
+
+
+{{ansible_default_ipv4.address}}
+{{ansible_hostname}}
+
+Using Template Module:
+Ansible will gather all the facts and varaibles  and after that it will process the 
+info.txt with all the facts and varaibles and after processing the file it will copy
+the file to the manage node into /tmp/info.txt

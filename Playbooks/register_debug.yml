@@ -1,0 +1,29 @@
+---
+  - name: This is the firstplay in this Playbook
+    hosts: backend
+    become: yes
+    tasks:
+      - name: First task is to install tree package
+        apt:
+          update_cache: yes
+          name: unzip
+          state: absent
+        register: output1
+      - name: Task to create an user
+        user:
+          name: sitara
+          state: present
+        register: output2
+      - name: Print the userid of the created user
+        shell:
+          cmd: echo "Shell User ID is {{ output2.uid }}"
+        register: out
+      - name: Debug Module
+        debug:
+          msg: 
+            - "User ID is {{ output2.uid }}"
+            - "Hello World"
+            - "Shell - output - {{ out.cmd }}"
+      - name: Debug var option
+        debug:
+          var: out.cmd
