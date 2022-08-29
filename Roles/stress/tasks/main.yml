@@ -1,0 +1,6 @@
+---
+- name: Install Stress Package
+  apt:
+    name: "{{ pkg_name1 }}"
+    state: present
+  notify: Create stress file

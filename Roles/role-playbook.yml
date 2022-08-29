@@ -1,0 +1,7 @@
+---
+  - name: This is the playbook to understand the concept of Roles
+    hosts: backend
+    roles:
+      - stress
+      - tree
+      - unzip

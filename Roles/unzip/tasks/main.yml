@@ -1,0 +1,6 @@
+---
+- name: Install Unzip
+  apt:
+    name: "{{ pkg_name1 }}"
+    state: present
+  notify: Unzip version

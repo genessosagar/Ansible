@@ -1,0 +1,4 @@
+---
+- name: Unzip version
+  shell:
+    cmd: unzip -v >> /tmp/unzip.txt

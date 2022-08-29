@@ -1,0 +1,4 @@
+---
+- name: Create stress file
+  shell:
+    cmd: stress --version >> /tmp/stress.txt

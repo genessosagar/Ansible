@@ -1,0 +1,4 @@
+---
+- name: Tree version
+  shell:
+    cmd: tree --version >> /tmp/tree.txt

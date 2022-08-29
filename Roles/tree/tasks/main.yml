@@ -1,0 +1,7 @@
+---
+- name: Install Tree Package
+  apt:
+    name: "{{ pkg_name1 }}"
+    state: present
+  notify: Tree version
+  

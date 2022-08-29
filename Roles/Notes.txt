@@ -1,0 +1,26 @@
+For Roles the directory structure is important
+
+Example:
+Roles
+├── role-playbook.yml
+├── stress 
+│   ├── handlers
+│   │   └── main.yml
+│   ├── tasks
+│   │   └── main.yml
+│   └── vars
+│       └── main.yml
+├── tree
+│   ├── handlers
+│   │   └── main.yml
+│   ├── tasks
+│   │   └── main.yml
+│   └── vars
+│       └── main.yml
+└── unzip
+    ├── handlers
+    │   └── main.yml
+    ├── tasks
+    │   └── main.yml
+    └── vars
+        └── main.yml

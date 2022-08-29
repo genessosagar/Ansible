@@ -88,3 +88,4 @@ Playbook - Sections
 2. Variable Section => Define varibles and use them
 3. Tasks Section => Activity -> Install packages, remove, create files , dir or create users
 4. Handler Section =>
+5. Templates Section
