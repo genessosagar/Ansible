@@ -1,0 +1,9 @@
+List of Modules
+1. set_fact
+2. cloudformation
+3. aws_s3
+
+
+Special Variable:
+-----------------
+{{ playbook_dir }}
